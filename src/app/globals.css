@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0f;
+  --background: #0c0a17;
   --foreground: #e2e8f0;
-  --primary: #8b5cf6;
-  --primary-hover: #7c3aed;
-  --primary-light: #a78bfa;
-  --accent: #06b6d4;
-  --accent-hover: #0891b2;
-  --card: #141420;
-  --card-border: #1e1e35;
-  --input-bg: #1a1a2e;
-  --input-border: #2a2a45;
-  --muted: #64748b;
+  --primary: #7e3ffc;
+  --primary-hover: #5a26de;
+  --primary-light: #a78bff;
+  --accent: #fc1eb4;
+  --accent-hover: #d90fa3;
+  --cyan: #01dcfd;
+  --card: #141022;
+  --card-border: #2a1e3e;
+  --input-bg: #171128;
+  --input-border: #33214c;
+  --muted: #8a7f9c;
 }
 
 @theme inline {
@@ -22,6 +23,7 @@
   --color-primary-hover: var(--primary-hover);
   --color-primary-light: var(--primary-light);
   --color-accent: var(--accent);
+  --color-cyan: var(--cyan);
   --color-accent-hover: var(--accent-hover);
   --color-card: var(--card);
   --color-card-border: var(--card-border);
@@ -153,8 +155,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background-color: rgba(126, 63, 252, 0.1);
+  border: 1px solid rgba(126, 63, 252, 0.2);
   border-radius: 9999px;
   padding: 0.375rem 1rem;
   margin-bottom: 1.5rem;
@@ -184,7 +186,7 @@ body {
 }
 
 .texto-gradiente {
-  background: linear-gradient(to right, var(--primary), var(--accent));
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--cyan));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -228,7 +230,7 @@ body {
 
 .botao-primario-grande:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.25);
+  box-shadow: 0 4px 20px rgba(126, 63, 252, 0.25);
 }
 
 .botao-secundario-grande {
@@ -242,7 +244,7 @@ body {
 }
 
 .botao-secundario-grande:hover {
-  border-color: rgba(139, 92, 246, 0.5);
+  border-color: rgba(126, 63, 252, 0.5);
   color: var(--foreground);
 }
 
@@ -274,7 +276,7 @@ body {
 }
 
 .cartao-recurso:hover {
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(126, 63, 252, 0.3);
 }
 
 .cartao-recurso-titulo {
@@ -405,7 +407,7 @@ body {
 
 .campo-formulario:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(126, 63, 252, 0.5);
   border-color: var(--primary);
 }
 
@@ -452,7 +454,7 @@ body {
 
 .botao-primario:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+  box-shadow: 0 4px 12px rgba(126, 63, 252, 0.25);
 }
 
 /* =========================================
@@ -502,7 +504,7 @@ body {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px #1a1a2e inset;
+  -webkit-box-shadow: 0 0 0px 1000px #1c1226 inset;
   -webkit-text-fill-color: #e2e8f0;
   transition: background-color 5000s ease-in-out 0s;
 }
@@ -552,7 +554,7 @@ input:-webkit-autofill:focus {
 
 .eventos-busca-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(126, 63, 252, 0.5);
   border-color: var(--primary);
 }
 
@@ -575,7 +577,7 @@ input:-webkit-autofill:focus {
 }
 
 .eventos-categoria-botao:hover {
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(126, 63, 252, 0.3);
   color: var(--foreground);
 }
 
@@ -619,7 +621,7 @@ input:-webkit-autofill:focus {
 }
 
 .cartao-evento:hover {
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(126, 63, 252, 0.3);
   transform: translateY(-2px);
 }
 
@@ -642,7 +644,7 @@ input:-webkit-autofill:focus {
   right: 0.75rem;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-  background-color: rgba(139, 92, 246, 0.9);
+  background-color: rgba(126, 63, 252, 0.9);
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
@@ -763,8 +765,8 @@ input:-webkit-autofill:focus {
   display: inline-block;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
-  background-color: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background-color: rgba(126, 63, 252, 0.15);
+  border: 1px solid rgba(126, 63, 252, 0.3);
   color: var(--primary-light);
   font-size: 0.75rem;
   font-weight: 600;
@@ -909,7 +911,7 @@ select.campo-formulario {
 .upload-botao:hover {
   border-color: var(--primary);
   color: var(--primary-light);
-  background-color: rgba(139, 92, 246, 0.05);
+  background-color: rgba(126, 63, 252, 0.05);
 }
 
 .upload-preview {
@@ -969,7 +971,7 @@ select.campo-formulario {
   padding: 0.625rem 1.25rem;
   border-radius: 0.75rem;
   background-color: transparent;
-  border: 1px solid rgba(139, 92, 246, 0.4);
+  border: 1px solid rgba(126, 63, 252, 0.4);
   color: var(--primary-light);
   font-weight: 500;
   font-size: 0.875rem;
@@ -978,7 +980,7 @@ select.campo-formulario {
 }
 
 .modal-botao-editar:hover {
-  background-color: rgba(139, 92, 246, 0.15);
+  background-color: rgba(126, 63, 252, 0.15);
   border-color: var(--primary);
   color: var(--primary);
 }
