@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
-import { Zap, Calendar, Music, Headphones } from "lucide-react";
+import { Zap, Calendar, Music, Headphones, LogOut } from "lucide-react";
 import { FundoEfeitoBrilho } from "@/components/layout/fundo-efeito-brilho";
 import { Cabecalho, CabecalhoNavegacao } from "@/components/layout/cabecalho";
 import { CartaoRecurso } from "@/components/ui/cartao-recurso";
 import Image from "next/image";
 
 export default function Home() {
-  const { admin } = useAuth();
+  const { admin, logout } = useAuth();
 
   return (
     <div className="pagina">
@@ -17,16 +17,21 @@ export default function Home() {
 
       <Cabecalho>
         <Image src="/logo-header.png" alt="BeatManager" width={240} height={80} style={{ objectFit: "contain" }} />
-        <CabecalhoNavegacao
-          itens={
-            admin
-              ? [{ href: "/dashboard", rotulo: "Painel", primario: true }]
-              : [
-                  { href: "/login", rotulo: "Entrar" },
-                  { href: "/cadastro", rotulo: "Cadastrar", primario: true },
-                ]
-          }
-        />
+        {admin ? (
+          <nav className="navegacao">
+            <button onClick={logout} className="botao-sair">
+              <LogOut className="w-4 h-4" />
+              Sair
+            </button>
+          </nav>
+        ) : (
+          <CabecalhoNavegacao
+            itens={[
+              { href: "/login", rotulo: "Entrar" },
+              { href: "/cadastro", rotulo: "Cadastrar", primario: true },
+            ]}
+          />
+        )}
       </Cabecalho>
 
       <main className="conteudo-principal">
@@ -45,8 +50,8 @@ export default function Home() {
 
         <div className="botoes-acao">
           {admin ? (
-            <Link href="/dashboard" className="botao-primario-grande">
-              Ir para o Painel
+            <Link href="/eventos" className="botao-primario-grande">
+              Eventos
             </Link>
           ) : (
             <>

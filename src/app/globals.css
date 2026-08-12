@@ -506,3 +506,526 @@ input:-webkit-autofill:focus {
   -webkit-text-fill-color: #e2e8f0;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* =========================================
+   PÁGINA DE EVENTOS
+   ========================================= */
+.eventos-pagina {
+  padding: 2rem;
+  gap: 1.5rem;
+}
+
+.eventos-filtros {
+  width: 100%;
+  max-width: 56rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.eventos-busca {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.eventos-busca svg {
+  position: absolute;
+  left: 1rem;
+}
+
+.eventos-busca-input {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border-radius: 0.75rem;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--foreground);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.eventos-busca-input::placeholder {
+  color: var(--muted);
+}
+
+.eventos-busca-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.5);
+  border-color: var(--primary);
+}
+
+.eventos-categorias {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.eventos-categoria-botao {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background-color: var(--card);
+  border: 1px solid var(--card-border);
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.eventos-categoria-botao:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  color: var(--foreground);
+}
+
+.eventos-categoria-ativa {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.eventos-categoria-ativa:hover {
+  background-color: var(--primary-hover);
+  color: white;
+}
+
+.grade-eventos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 56rem;
+}
+
+@media (min-width: 640px) {
+  .grade-eventos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grade-eventos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.cartao-evento {
+  background-color: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 0;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.cartao-evento:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.cartao-evento-capa {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+}
+
+.cartao-evento-capa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cartao-evento-categoria {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: rgba(139, 92, 246, 0.9);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cartao-evento-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cartao-evento-titulo {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.cartao-evento-detalhes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cartao-evento-detalhe {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.cartao-evento-descricao {
+  font-size: 0.875rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 0.25rem;
+}
+
+.eventos-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  color: var(--muted);
+}
+
+/* =========================================
+   MODAL DE EVENTO
+   ========================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+}
+
+.modal-conteudo {
+  width: 100%;
+  max-width: 32rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 0;
+  position: relative;
+}
+
+.modal-fechar {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(10, 10, 20, 0.7);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-fechar:hover {
+  color: var(--foreground);
+  border-color: var(--foreground);
+}
+
+.modal-capa {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.modal-capa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-info {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-categoria {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: var(--primary-light);
+  font-size: 0.75rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.modal-titulo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.modal-detalhes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-detalhe {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+
+.modal-descricao {
+  font-size: 1rem;
+  color: rgba(226, 232, 240, 0.8);
+  line-height: 1.6;
+  margin-top: 0.5rem;
+}
+
+/* =========================================
+   BOTÃO SAIR
+   ========================================= */
+.botao-sair {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  background-color: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.botao-sair:hover {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: #f87171;
+  color: #fca5a5;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
+
+/* =========================================
+   FORMULÁRIO DE EVENTO
+   ========================================= */
+.formulario-evento {
+  width: 100%;
+  max-width: 32rem;
+  background-color: var(--card);
+  border: 1px solid var(--card-border);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.campo-textarea {
+  resize: vertical;
+  min-height: 5rem;
+  font-family: inherit;
+}
+
+select.campo-formulario {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* =========================================
+   ABAS
+   ========================================= */
+.abas {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--card-border);
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.aba {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.aba:hover {
+  color: var(--foreground);
+}
+
+.aba-ativa {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* =========================================
+   UPLOAD DE IMAGEM (input simples)
+   ========================================= */
+.upload-botao {
+  width: 100%;
+  padding: 2rem;
+  border: 2px dashed var(--input-border);
+  border-radius: 0.75rem;
+  background-color: var(--input-bg);
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.upload-botao:hover {
+  border-color: var(--primary);
+  color: var(--primary-light);
+  background-color: rgba(139, 92, 246, 0.05);
+}
+
+.upload-preview {
+  position: relative;
+  width: 100%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+.upload-preview-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.upload-remover {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.9);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-remover:hover {
+  background-color: #dc2626;
+}
+
+.hidden {
+  display: none;
+}
+
+/* =========================================
+   ACOES DO MODAL
+   ========================================= */
+.modal-acoes {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.modal-botao-editar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  background-color: transparent;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  color: var(--primary-light);
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-botao-editar:hover {
+  background-color: rgba(139, 92, 246, 0.15);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.modal-botao-excluir {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  background-color: transparent;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-botao-excluir:hover {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: #f87171;
+  color: #fca5a5;
+}
+
+/* =========================================
+   BOTOES DO FORMULARIO
+   ========================================= */
+.formulario-botoes {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.botao-cancelar {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background-color: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.botao-cancelar:hover {
+  border-color: rgba(226, 232, 240, 0.3);
+  color: var(--foreground);
+}
