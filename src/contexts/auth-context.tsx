@@ -8,6 +8,7 @@ interface AuthContextType {
   admin: Admin | null;
   login: (email: string, senha: string) => boolean;
   register: (nome: string, email: string, senha: string) => boolean;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -39,8 +40,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return true;
   }
 
+  function logout() {
+    setAdmin(null);
+  }
+
   return (
-    <AuthContext.Provider value={{ admin, login, register }}>
+    <AuthContext.Provider value={{ admin, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
