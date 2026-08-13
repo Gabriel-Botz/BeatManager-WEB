@@ -17,7 +17,7 @@ const categorias = ["Todas", ...Object.values(TipoEvento)];
 
 export default function EventosPage() {
   const router = useRouter();
-  const { admin, logout } = useAuth();
+  const { admin, token, logout } = useAuth();
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState("");
@@ -25,16 +25,16 @@ export default function EventosPage() {
   const [eventoSelecionado, setEventoSelecionado] = useState<Evento | null>(null);
 
   useEffect(() => {
-    if (!admin) {
+    if (!admin || !token) {
       router.push("/login");
       return;
     }
 
-    api.listarEventos(0, 100)
+    api.listarEventos(token, 0, 100)
       .then((res) => setEventos(res.content))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [admin, router]);
+  }, [admin, token, router]);
 
   const eventosFiltrados = eventos.filter((evento) => {
     const buscaMatch =

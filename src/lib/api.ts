@@ -58,11 +58,13 @@ export function buscarPerfil(token: string): Promise<Administrador> {
 }
 
 export function listarEventos(
+  token: string,
   page: number = 0,
   size: number = 10
 ): Promise<PageResponse<Evento>> {
   return request<PageResponse<Evento>>(
-    `/eventos?page=${page}&size=${size}`
+    `/eventos?page=${page}&size=${size}`,
+    { headers: authHeaders(token) }
   );
 }
 
