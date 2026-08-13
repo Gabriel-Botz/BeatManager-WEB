@@ -84,11 +84,6 @@ export default function MeusEventosPage() {
       </Cabecalho>
 
       <main className="conteudo-principal eventos-pagina">
-        <div className="badge">
-          <Music className="w-4 h-4 text-primary" />
-          <span className="badge-texto">Seus Eventos</span>
-        </div>
-
         <h1 className="titulo-principal">
           <span className="texto-gradiente">Meus</span> eventos
         </h1>

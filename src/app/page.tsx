@@ -35,11 +35,6 @@ export default function Home() {
       </Cabecalho>
 
       <main className="conteudo-principal">
-        <div className="badge">
-          <Zap className="w-4 h-4 text-primary" />
-          <span className="badge-texto">Música Eletrônica</span>
-        </div>
-
         <h1 className="titulo-principal">
           Gerencie seus <span className="texto-gradiente">eventos</span>
         </h1>

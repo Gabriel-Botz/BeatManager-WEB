@@ -52,11 +52,6 @@ export default function EventosPage() {
       </Cabecalho>
 
       <main className="conteudo-principal eventos-pagina">
-        <div className="badge">
-          <Music className="w-4 h-4 text-primary" />
-          <span className="badge-texto">Próximos Eventos</span>
-        </div>
-
         <h1 className="titulo-principal">
           Encontre seu <span className="texto-gradiente">evento</span>
         </h1>
