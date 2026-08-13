@@ -1,51 +1,81 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { Admin } from "@/lib/types";
-import { admins as mockAdmins } from "@/lib/mock-data";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { Administrador } from "@/lib/types";
+import * as api from "@/lib/api";
 
 interface AuthContextType {
-  admin: Admin | null;
-  login: (email: string, senha: string) => boolean;
-  register: (nome: string, email: string, senha: string) => boolean;
+  admin: Administrador | null;
+  token: string | null;
+  login: (email: string, senha: string) => Promise<boolean>;
+  register: (nome: string, email: string, senha: string) => Promise<boolean>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [admin, setAdmin] = useState<Admin | null>(null);
-  const [adminsList, setAdminsList] = useState<Admin[]>(mockAdmins);
+const STORAGE_KEY = "beatmanager_token";
+const ADMIN_KEY = "beatmanager_admin";
 
-  function login(email: string, senha: string): boolean {
-    const found = adminsList.find((a) => a.email === email && a.senha === senha);
-    if (found) {
-      setAdmin(found);
-      return true;
+function loadInitialToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(STORAGE_KEY);
+}
+
+function loadInitialAdmin(): Administrador | null {
+  if (typeof window === "undefined") return null;
+  const saved = localStorage.getItem(ADMIN_KEY);
+  return saved ? JSON.parse(saved) : null;
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [admin, setAdmin] = useState<Administrador | null>(loadInitialAdmin);
+  const [token, setToken] = useState<string | null>(loadInitialToken);
+
+  useEffect(() => {
+    if (token && admin) {
+      api.buscarPerfil(token).catch(() => {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(ADMIN_KEY);
+        setToken(null);
+        setAdmin(null);
+      });
     }
-    return false;
+  }, [token, admin]);
+
+  async function login(email: string, senha: string): Promise<boolean> {
+    try {
+      const res = await api.login({ email, senha });
+      const administrador: Administrador = { id: res.id, nome: res.nome, email: res.email };
+
+      setToken(res.token);
+      setAdmin(administrador);
+      localStorage.setItem(STORAGE_KEY, res.token);
+      localStorage.setItem(ADMIN_KEY, JSON.stringify(administrador));
+      return true;
+    } catch {
+      return false;
+    }
   }
 
-  function register(nome: string, email: string, senha: string): boolean {
-    const exists = adminsList.find((a) => a.email === email);
-    if (exists) return false;
-
-    const newAdmin: Admin = {
-      id: String(adminsList.length + 1),
-      nome,
-      email,
-      senha,
-    };
-    setAdminsList((prev) => [...prev, newAdmin]);
-    return true;
+  async function register(nome: string, email: string, senha: string): Promise<boolean> {
+    try {
+      await api.cadastrar({ nome, email, senha });
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   function logout() {
+    setToken(null);
     setAdmin(null);
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(ADMIN_KEY);
   }
 
   return (
-    <AuthContext.Provider value={{ admin, login, register, logout }}>
+    <AuthContext.Provider value={{ admin, token, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

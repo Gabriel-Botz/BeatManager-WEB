@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { eventos as mockEventos } from "@/lib/mock-data";
-import { Evento } from "@/lib/types";
+import { Evento, TipoEvento } from "@/lib/types";
+import * as api from "@/lib/api";
 import { FundoEfeitoBrilho } from "@/components/layout/fundo-efeito-brilho";
 import { Cabecalho } from "@/components/layout/cabecalho";
 import { CabecalhoLogado } from "@/components/layout/cabecalho-logado";
@@ -12,58 +12,61 @@ import { CartaoEvento } from "@/components/ui/cartao-evento";
 import { ModalEvento } from "@/components/ui/modal-evento";
 import { FiltrosEventos } from "@/components/ui/filtros-eventos";
 import { FormularioEvento } from "@/components/ui/formulario-evento";
-import { Calendar, Music } from "lucide-react";
-import Image from "next/image";
+import { Calendar } from "lucide-react";
 
-const categorias = ["Todas", ...new Set(mockEventos.map((e) => e.categoria))];
+const categorias = ["Todas", ...Object.values(TipoEvento)];
 
 export default function MeusEventosPage() {
   const router = useRouter();
-  const { admin, logout } = useAuth();
+  const { admin, token, logout } = useAuth();
   const [aba, setAba] = useState<"lista" | "cadastrar" | "editar">("lista");
   const [busca, setBusca] = useState("");
   const [categoria, setCategoria] = useState("Todas");
   const [eventoSelecionado, setEventoSelecionado] = useState<Evento | null>(null);
   const [eventoEditando, setEventoEditando] = useState<Evento | null>(null);
-  const [listaEventos, setListaEventos] = useState<Evento[]>(mockEventos);
+  const [listaEventos, setListaEventos] = useState<Evento[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!admin) {
+    if (!admin || !token) {
       router.push("/login");
+      return;
     }
-  }, [admin, router]);
 
-  const meusEventos = useMemo(() => {
-    if (!admin) return [];
-    return listaEventos.filter((evento) => evento.adminId === admin.id);
-  }, [admin, listaEventos]);
+    api.listarMeusEventos(token, admin.id, 0, 100)
+      .then((res) => setListaEventos(res.content))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [admin, token, router]);
 
-  const eventosFiltrados = useMemo(() => {
-    return meusEventos.filter((evento) => {
-      const buscaMatch =
-        evento.nome.toLowerCase().includes(busca.toLowerCase()) ||
-        evento.local.toLowerCase().includes(busca.toLowerCase());
-      const categoriaMatch =
-        categoria === "Todas" || evento.categoria === categoria;
-      return buscaMatch && categoriaMatch;
-    });
-  }, [meusEventos, busca, categoria]);
+  const eventosFiltrados = listaEventos.filter((evento) => {
+    const buscaMatch =
+      evento.nome.toLowerCase().includes(busca.toLowerCase()) ||
+      evento.localizacao.toLowerCase().includes(busca.toLowerCase());
+    const categoriaMatch =
+      categoria === "Todas" || evento.tipo === categoria;
+    return buscaMatch && categoriaMatch;
+  });
 
-  function aoCadastrarEvento(evento: Evento) {
+  async function aoCadastrarEvento(evento: Evento) {
     setListaEventos((prev) => [...prev, evento]);
     setAba("lista");
   }
 
-  function aoEditarEvento(evento: Evento) {
+  async function aoEditarEvento(evento: Evento) {
     setListaEventos((prev) => prev.map((e) => (e.id === evento.id ? evento : e)));
     setEventoEditando(null);
     setEventoSelecionado(null);
     setAba("lista");
   }
 
-  function aoExcluirEvento(evento: Evento) {
-    setListaEventos((prev) => prev.filter((e) => e.id !== evento.id));
-    setEventoSelecionado(null);
+  async function aoExcluirEvento(evento: Evento) {
+    if (!token) return;
+    try {
+      await api.deletarEvento(token, evento.id);
+      setListaEventos((prev) => prev.filter((e) => e.id !== evento.id));
+      setEventoSelecionado(null);
+    } catch {}
   }
 
   function abrirEdicao(evento: Evento) {
@@ -109,13 +112,13 @@ export default function MeusEventosPage() {
 
         {aba === "editar" && eventoEditando ? (
           <FormularioEvento
-            adminId={admin.id}
+            token={token!}
             aoCadastrar={aoEditarEvento}
             evento={eventoEditando}
             aoCancelar={() => { setAba("lista"); setEventoEditando(null); }}
           />
         ) : aba === "cadastrar" ? (
-          <FormularioEvento adminId={admin.id} aoCadastrar={aoCadastrarEvento} />
+          <FormularioEvento token={token!} aoCadastrar={aoCadastrarEvento} />
         ) : (
           <>
             <FiltrosEventos
@@ -126,7 +129,11 @@ export default function MeusEventosPage() {
               categorias={categorias}
             />
 
-            {eventosFiltrados.length > 0 ? (
+            {loading ? (
+              <div className="eventos-vazio">
+                <p>Carregando eventos...</p>
+              </div>
+            ) : eventosFiltrados.length > 0 ? (
               <div className="grade-eventos">
                 {eventosFiltrados.map((evento) => (
                   <div key={evento.id} onClick={() => setEventoSelecionado(evento)} className="cursor-pointer">

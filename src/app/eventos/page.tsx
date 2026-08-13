@@ -1,44 +1,49 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { eventos } from "@/lib/mock-data";
-import { Evento } from "@/lib/types";
+import { Evento, TipoEvento } from "@/lib/types";
+import * as api from "@/lib/api";
 import { FundoEfeitoBrilho } from "@/components/layout/fundo-efeito-brilho";
 import { Cabecalho } from "@/components/layout/cabecalho";
 import { CabecalhoLogado } from "@/components/layout/cabecalho-logado";
 import { CartaoEvento } from "@/components/ui/cartao-evento";
 import { ModalEvento } from "@/components/ui/modal-evento";
 import { FiltrosEventos } from "@/components/ui/filtros-eventos";
-import { Calendar, Music } from "lucide-react";
-import Image from "next/image";
+import { Calendar } from "lucide-react";
 
-const categorias = ["Todas", ...new Set(eventos.map((e) => e.categoria))];
+const categorias = ["Todas", ...Object.values(TipoEvento)];
 
 export default function EventosPage() {
   const router = useRouter();
-  const { admin, logout } = useAuth();
+  const { admin, token, logout } = useAuth();
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState("");
   const [categoria, setCategoria] = useState("Todas");
   const [eventoSelecionado, setEventoSelecionado] = useState<Evento | null>(null);
 
   useEffect(() => {
-    if (!admin) {
+    if (!admin || !token) {
       router.push("/login");
+      return;
     }
-  }, [admin, router]);
 
-  const eventosFiltrados = useMemo(() => {
-    return eventos.filter((evento) => {
-      const buscaMatch =
-        evento.nome.toLowerCase().includes(busca.toLowerCase()) ||
-        evento.local.toLowerCase().includes(busca.toLowerCase());
-      const categoriaMatch =
-        categoria === "Todas" || evento.categoria === categoria;
-      return buscaMatch && categoriaMatch;
-    });
-  }, [busca, categoria]);
+    api.listarEventos(token, 0, 100)
+      .then((res) => setEventos(res.content))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [admin, token, router]);
+
+  const eventosFiltrados = eventos.filter((evento) => {
+    const buscaMatch =
+      evento.nome.toLowerCase().includes(busca.toLowerCase()) ||
+      evento.localizacao.toLowerCase().includes(busca.toLowerCase());
+    const categoriaMatch =
+      categoria === "Todas" || evento.tipo === categoria;
+    return buscaMatch && categoriaMatch;
+  });
 
   if (!admin) return null;
 
@@ -68,7 +73,11 @@ export default function EventosPage() {
           categorias={categorias}
         />
 
-        {eventosFiltrados.length > 0 ? (
+        {loading ? (
+          <div className="eventos-vazio">
+            <p>Carregando eventos...</p>
+          </div>
+        ) : eventosFiltrados.length > 0 ? (
           <div className="grade-eventos">
             {eventosFiltrados.map((evento) => (
               <div key={evento.id} onClick={() => setEventoSelecionado(evento)} className="cursor-pointer">

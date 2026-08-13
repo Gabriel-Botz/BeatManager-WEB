@@ -17,11 +17,11 @@ export function ModalEvento({ evento, aoFechar, aoEditar, aoExcluir }: ModalEven
         </button>
 
         <div className="modal-capa">
-          <img src={evento.capa} alt={evento.nome} />
+          <img src={evento.imagemUrl} alt={evento.nome} />
         </div>
 
         <div className="modal-info">
-          <span className="modal-categoria">{evento.categoria}</span>
+          <span className="modal-categoria">{evento.tipo}</span>
           <h2 className="modal-titulo">{evento.nome}</h2>
 
           <div className="modal-detalhes">
@@ -36,7 +36,7 @@ export function ModalEvento({ evento, aoFechar, aoEditar, aoExcluir }: ModalEven
             </span>
             <span className="modal-detalhe">
               <MapPin className="w-4 h-4" />
-              {evento.local}
+              {evento.localizacao}
             </span>
           </div>
 

@@ -18,7 +18,7 @@ export default function LoginPage() {
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
@@ -27,7 +27,7 @@ export default function LoginPage() {
       return;
     }
 
-    const logged = login(email, senha);
+    const logged = await login(email, senha);
     if (!logged) {
       setError("E-mail ou senha inválidos.");
       return;

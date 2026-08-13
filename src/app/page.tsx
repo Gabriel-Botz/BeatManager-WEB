@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
-import { Zap, Calendar, Music, Headphones, LogOut } from "lucide-react";
+import { Calendar, Music, Headphones, LogOut } from "lucide-react";
 import { FundoEfeitoBrilho } from "@/components/layout/fundo-efeito-brilho";
 import { Cabecalho, CabecalhoNavegacao } from "@/components/layout/cabecalho";
 import { CartaoRecurso } from "@/components/ui/cartao-recurso";
-import Image from "next/image";
 
 export default function Home() {
   const { admin, logout } = useAuth();
