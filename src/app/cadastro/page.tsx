@@ -21,7 +21,7 @@ export default function CadastroPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
@@ -40,7 +40,7 @@ export default function CadastroPage() {
       return;
     }
 
-    const registered = register(nome, email, senha);
+    const registered = await register(nome, email, senha);
     if (!registered) {
       setError("Este e-mail já está cadastrado.");
       return;
