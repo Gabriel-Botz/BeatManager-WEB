@@ -47,16 +47,11 @@ export default function EventosPage() {
       <FundoEfeitoBrilho />
 
       <Cabecalho>
-        <Image src="/logo-header.png" alt="BeatManager" width={240} height={80} style={{ objectFit: "contain" }} />
+        <img src="/logo-header2.png" alt="BeatManager" style={{ width: 210, height: 70, objectFit: "contain" }} />
         <CabecalhoLogado aoSair={logout} />
       </Cabecalho>
 
       <main className="conteudo-principal eventos-pagina">
-        <div className="badge">
-          <Music className="w-4 h-4 text-primary" />
-          <span className="badge-texto">Próximos Eventos</span>
-        </div>
-
         <h1 className="titulo-principal">
           Encontre seu <span className="texto-gradiente">evento</span>
         </h1>

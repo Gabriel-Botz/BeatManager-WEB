@@ -38,6 +38,21 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('/background-mb.png');
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.15;
+  filter: blur(1px) brightness(0.6);
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* =========================================
@@ -97,7 +112,7 @@ body {
   padding: 0 2rem;
   border-bottom: 1px solid var(--card-border);
   border-radius: 0 0 1rem 1rem;
-  background-color: rgba(10, 10, 20, 0.8);
+  background-color: rgba(10, 10, 20, 0.3);
   backdrop-filter: blur(10px);
 }
 
@@ -267,12 +282,15 @@ body {
 }
 
 .cartao-recurso {
-  background-color: var(--card);
-  border: 1px solid var(--card-border);
+  background: rgba(20, 16, 34, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0;
   padding: 1.5rem;
   text-align: center;
   transition: border-color 0.2s;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .cartao-recurso:hover {
@@ -338,14 +356,17 @@ body {
 
 .cartao-formulario {
   width: 100%;
-  background-color: var(--card);
-  border: 1px solid var(--card-border);
+  background: rgba(20, 16, 34, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   position: relative;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .botao-fechar {
@@ -613,11 +634,14 @@ input:-webkit-autofill:focus {
 }
 
 .cartao-evento {
-  background-color: var(--card);
-  border: 1px solid var(--card-border);
+  background: rgba(20, 16, 34, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0;
   overflow: hidden;
   transition: border-color 0.2s, transform 0.2s;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .cartao-evento:hover {
@@ -713,10 +737,13 @@ input:-webkit-autofill:focus {
   max-width: 32rem;
   max-height: 90vh;
   overflow-y: auto;
-  background-color: var(--card);
-  border: 1px solid var(--card-border);
+  background: rgba(20, 16, 34, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0;
   position: relative;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .modal-fechar {
@@ -831,12 +858,15 @@ input:-webkit-autofill:focus {
 .formulario-evento {
   width: 100%;
   max-width: 32rem;
-  background-color: var(--card);
-  border: 1px solid var(--card-border);
+  background: rgba(20, 16, 34, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .campo-textarea {
