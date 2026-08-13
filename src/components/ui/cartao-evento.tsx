@@ -9,8 +9,8 @@ export function CartaoEvento({ evento }: CartaoEventoProps) {
   return (
     <div className="cartao-evento">
       <div className="cartao-evento-capa">
-        <img src={evento.capa} alt={evento.nome} />
-        <span className="cartao-evento-categoria">{evento.categoria}</span>
+        <img src={evento.imagemUrl} alt={evento.nome} />
+        <span className="cartao-evento-categoria">{evento.tipo}</span>
       </div>
       <div className="cartao-evento-info">
         <h3 className="cartao-evento-titulo">{evento.nome}</h3>
@@ -21,7 +21,7 @@ export function CartaoEvento({ evento }: CartaoEventoProps) {
           </span>
           <span className="cartao-evento-detalhe">
             <MapPin className="w-4 h-4" />
-            {evento.local}
+            {evento.localizacao}
           </span>
         </div>
         <p className="cartao-evento-descricao">{evento.descricao}</p>

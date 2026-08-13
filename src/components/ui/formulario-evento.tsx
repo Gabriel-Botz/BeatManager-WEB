@@ -1,46 +1,37 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { CampoFormulario } from "@/components/ui/campo-formulario";
 import { BotaoPrimario } from "@/components/ui/botao-primario";
 import { Alerta } from "@/components/ui/alerta";
-import { Evento } from "@/lib/types";
+import { Evento, TipoEvento, EventoRequest } from "@/lib/types";
+import * as api from "@/lib/api";
 import { Upload, X } from "lucide-react";
 
 interface FormularioEventoProps {
-  adminId: string;
+  token: string;
   aoCadastrar: (evento: Evento) => void;
   evento?: Evento | null;
   aoCancelar?: () => void;
 }
 
-const categoriasDisponiveis = ["Festival", "Show", "Rave"];
+const categoriasDisponiveis = Object.values(TipoEvento);
 
-export function FormularioEvento({ adminId, aoCadastrar, evento, aoCancelar }: FormularioEventoProps) {
-  const [nome, setNome] = useState("");
-  const [data, setData] = useState("");
-  const [local, setLocal] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [categoria, setCategoria] = useState(categoriasDisponiveis[0]);
-  const [capa, setCapa] = useState("");
+export function FormularioEvento({ token, aoCadastrar, evento, aoCancelar }: FormularioEventoProps) {
+  const [nome, setNome] = useState(evento?.nome ?? "");
+  const [data, setData] = useState(evento?.data.split("T")[0] ?? "");
+  const [localizacao, setLocalizacao] = useState(evento?.localizacao ?? "");
+  const [descricao, setDescricao] = useState(evento?.descricao ?? "");
+  const [tipo, setTipo] = useState<TipoEvento>(evento?.tipo ?? TipoEvento.SHOW);
+  const [imagemUrl, setImagemUrl] = useState(evento?.imagemUrl ?? "");
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState(false);
+  const [enviando, setEnviando] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const editando = !!evento;
 
-  useEffect(() => {
-    if (evento) {
-      setNome(evento.nome);
-      setData(evento.data);
-      setLocal(evento.local);
-      setDescricao(evento.descricao);
-      setCategoria(evento.categoria);
-      setCapa(evento.capa);
-    }
-  }, [evento]);
-
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -49,51 +40,78 @@ export function FormularioEvento({ adminId, aoCadastrar, evento, aoCancelar }: F
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setCapa(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    setEnviando(true);
+    try {
+      const res = await api.uploadImagem(token, file);
+      setImagemUrl(res.url);
+    } catch {
+      setErro("Erro ao fazer upload da imagem.");
+    } finally {
+      setEnviando(false);
+    }
   }
 
   function limparImagem() {
-    setCapa("");
+    setImagemUrl("");
     if (inputRef.current) {
       inputRef.current.value = "";
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErro("");
 
-    if (!nome || !data || !local || !descricao) {
+    if (!nome || !data || !localizacao || !descricao) {
       setErro("Preencha todos os campos.");
       return;
     }
 
-    const eventoData: Evento = {
-      id: editando ? evento.id : String(Date.now()),
-      adminId,
-      nome,
-      data,
-      local,
-      descricao,
-      capa: capa || "/eventos/default.jpg",
-      categoria,
-    };
+    if (editando) {
+      try {
+        const res = await api.atualizarEvento(token, evento.id, {
+          data: data + "T20:00:00",
+          localizacao,
+        });
+        aoCadastrar(res);
+      } catch {
+        setErro("Erro ao atualizar evento.");
+        return;
+      }
+    } else {
+      if (!imagemUrl) {
+        setErro("Faça o upload de uma imagem.");
+        return;
+      }
 
-    aoCadastrar(eventoData);
+      const dto: EventoRequest = {
+        nome,
+        data: data + "T20:00:00",
+        localizacao,
+        descricao,
+        imagemUrl,
+        tipo,
+      };
+
+      try {
+        const res = await api.criarEvento(token, dto);
+        aoCadastrar(res);
+      } catch {
+        setErro("Erro ao cadastrar evento.");
+        return;
+      }
+    }
+
     setSucesso(true);
     setTimeout(() => setSucesso(false), 2000);
 
     if (!editando) {
       setNome("");
       setData("");
-      setLocal("");
+      setLocalizacao("");
       setDescricao("");
-      setCategoria(categoriasDisponiveis[0]);
-      setCapa("");
+      setTipo(TipoEvento.SHOW);
+      setImagemUrl("");
       if (inputRef.current) inputRef.current.value = "";
     }
   }
@@ -113,6 +131,7 @@ export function FormularioEvento({ adminId, aoCadastrar, evento, aoCancelar }: F
         value={nome}
         onChange={(e) => setNome(e.target.value)}
         placeholder="Ex: Festival Eletrônico"
+        disabled={editando}
       />
 
       <CampoFormulario
@@ -125,69 +144,76 @@ export function FormularioEvento({ adminId, aoCadastrar, evento, aoCancelar }: F
       <CampoFormulario
         rotulo="Local"
         type="text"
-        value={local}
-        onChange={(e) => setLocal(e.target.value)}
+        value={localizacao}
+        onChange={(e) => setLocalizacao(e.target.value)}
         placeholder="Ex: São Paulo, SP"
       />
 
-      <div className="campo-grupo">
-        <label className="rotulo-formulario">Categoria</label>
-        <select
-          value={categoria}
-          onChange={(e) => setCategoria(e.target.value)}
-          className="campo-formulario"
-        >
-          {categoriasDisponiveis.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-      </div>
+      {!editando && (
+        <div className="campo-grupo">
+          <label className="rotulo-formulario">Categoria</label>
+          <select
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value as TipoEvento)}
+            className="campo-formulario"
+          >
+            {categoriasDisponiveis.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
-      <div className="campo-grupo">
-        <label className="rotulo-formulario">Descrição</label>
-        <textarea
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-          placeholder="Descreva o evento..."
-          className="campo-formulario campo-textarea"
-          rows={3}
-        />
-      </div>
+      {!editando && (
+        <div className="campo-grupo">
+          <label className="rotulo-formulario">Descrição</label>
+          <textarea
+            value={descricao}
+            onChange={(e) => setDescricao(e.target.value)}
+            placeholder="Descreva o evento..."
+            className="campo-formulario campo-textarea"
+            rows={3}
+          />
+        </div>
+      )}
 
-      <div className="campo-grupo">
-        <label className="rotulo-formulario">Capa do evento</label>
+      {!editando && (
+        <div className="campo-grupo">
+          <label className="rotulo-formulario">Capa do evento</label>
 
-        {capa ? (
-          <div className="upload-preview">
-            <img src={capa} alt="Preview" className="upload-preview-img" />
+          {imagemUrl ? (
+            <div className="upload-preview">
+              <img src={imagemUrl} alt="Preview" className="upload-preview-img" />
+              <button
+                type="button"
+                onClick={limparImagem}
+                className="upload-remover"
+              >
+                <X className="w-4 h-4" />
+                Remover
+              </button>
+            </div>
+          ) : (
             <button
               type="button"
-              onClick={limparImagem}
-              className="upload-remover"
+              onClick={() => inputRef.current?.click()}
+              className="upload-botao"
+              disabled={enviando}
             >
-              <X className="w-4 h-4" />
-              Remover
+              <Upload className="w-5 h-5" />
+              {enviando ? "Enviando..." : "Escolher imagem"}
             </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            className="upload-botao"
-          >
-            <Upload className="w-5 h-5" />
-            Escolher imagem
-          </button>
-        )}
+          )}
 
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-      </div>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+        </div>
+      )}
 
       <div className="formulario-botoes">
         {aoCancelar && (

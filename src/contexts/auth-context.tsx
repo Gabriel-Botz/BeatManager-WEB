@@ -17,26 +17,31 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const STORAGE_KEY = "beatmanager_token";
 const ADMIN_KEY = "beatmanager_admin";
 
+function loadInitialToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(STORAGE_KEY);
+}
+
+function loadInitialAdmin(): Administrador | null {
+  if (typeof window === "undefined") return null;
+  const saved = localStorage.getItem(ADMIN_KEY);
+  return saved ? JSON.parse(saved) : null;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [admin, setAdmin] = useState<Administrador | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [admin, setAdmin] = useState<Administrador | null>(loadInitialAdmin);
+  const [token, setToken] = useState<string | null>(loadInitialToken);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem(STORAGE_KEY);
-    const savedAdmin = localStorage.getItem(ADMIN_KEY);
-
-    if (savedToken && savedAdmin) {
-      setToken(savedToken);
-      setAdmin(JSON.parse(savedAdmin));
-
-      api.buscarPerfil(savedToken).catch(() => {
+    if (token && admin) {
+      api.buscarPerfil(token).catch(() => {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(ADMIN_KEY);
         setToken(null);
         setAdmin(null);
       });
     }
-  }, []);
+  }, [token, admin]);
 
   async function login(email: string, senha: string): Promise<boolean> {
     try {
