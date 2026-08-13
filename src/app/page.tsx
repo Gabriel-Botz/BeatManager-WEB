@@ -16,7 +16,7 @@ export default function Home() {
       <FundoEfeitoBrilho />
 
       <Cabecalho>
-        <Image src="/logo-header.png" alt="BeatManager" width={240} height={80} style={{ objectFit: "contain" }} />
+        <img src="/logo-header2.png" alt="BeatManager" style={{ width: 210, height: 70, objectFit: "contain" }} />
         {admin ? (
           <nav className="navegacao">
             <button onClick={logout} className="botao-sair">
