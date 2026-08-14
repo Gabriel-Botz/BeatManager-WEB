@@ -100,7 +100,7 @@ export default function MeusEventosPage() {
       <FundoEfeitoBrilho />
 
       <Cabecalho>
-        <img src="/logo-header2.png" alt="BeatManager" style={{ width: 210, height: 70, objectFit: "contain" }} />
+        <img src="/logo-header2.png" alt="BeatManager" className="logo-cabecalho" />
         <CabecalhoLogado aoSair={logout} />
       </Cabecalho>
 
