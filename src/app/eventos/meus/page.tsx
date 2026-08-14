@@ -63,6 +63,7 @@ export default function MeusEventosPage() {
   async function aoExcluirEvento(evento: Evento) {
     if (!token) return;
     try {
+      await api.deletarImagem(token, evento.imagemUrl).catch(() => {});
       await api.deletarEvento(token, evento.id);
       setListaEventos((prev) => prev.filter((e) => e.id !== evento.id));
       setEventoSelecionado(null);
