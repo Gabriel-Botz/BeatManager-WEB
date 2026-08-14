@@ -12,13 +12,13 @@ export function CabecalhoLogado({ aoSair }: CabecalhoLogadoProps) {
 
   return (
     <nav className="navegacao">
-      <Link href="/" className="botao-nav botao-nav-texto">Início</Link>
+      <Link href="/" className="botao-nav botao-nav-texto">Inicio</Link>
       <Link href={estaEmMeusEventos ? "/eventos" : "/eventos/meus"} className="botao-nav botao-nav-texto">
         {estaEmMeusEventos ? "Eventos" : "Meus Eventos"}
       </Link>
       <button onClick={aoSair} className="botao-sair">
-        <LogOut className="w-4 h-4" />
-        Sair
+        <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        <span className="hidden sm:inline">Sair</span>
       </button>
     </nav>
   );
