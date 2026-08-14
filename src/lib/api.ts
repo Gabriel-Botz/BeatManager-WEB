@@ -9,7 +9,7 @@ import {
   PageResponse,
 } from "./types";
 
-const BASE_URL = "http://localhost:8081";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
 
 async function request<T>(
   path: string,
