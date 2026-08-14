@@ -11,9 +11,11 @@ import { CabecalhoLogado } from "@/components/layout/cabecalho-logado";
 import { CartaoEvento } from "@/components/ui/cartao-evento";
 import { ModalEvento } from "@/components/ui/modal-evento";
 import { FiltrosEventos } from "@/components/ui/filtros-eventos";
+import { Paginacao } from "@/components/ui/paginacao";
 import { Calendar } from "lucide-react";
 
 const categorias = ["Todas", ...Object.values(TipoEvento)];
+const ITENS_POR_PAGINA = 6;
 
 export default function EventosPage() {
   const router = useRouter();
@@ -23,6 +25,8 @@ export default function EventosPage() {
   const [busca, setBusca] = useState("");
   const [categoria, setCategoria] = useState("Todas");
   const [eventoSelecionado, setEventoSelecionado] = useState<Evento | null>(null);
+  const [paginaAtual, setPaginaAtual] = useState(0);
+  const [totalPaginas, setTotalPaginas] = useState(0);
 
   useEffect(() => {
     if (!admin || !token) {
@@ -30,11 +34,14 @@ export default function EventosPage() {
       return;
     }
 
-    api.listarEventos(token, 0, 100)
-      .then((res) => setEventos(res.content))
+    api.listarEventos(token, paginaAtual, ITENS_POR_PAGINA)
+      .then((res) => {
+        setEventos(res.content);
+        setTotalPaginas(res.totalPages);
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [admin, token, router]);
+  }, [admin, token, router, paginaAtual]);
 
   const eventosFiltrados = eventos.filter((evento) => {
     const buscaMatch =
@@ -44,6 +51,16 @@ export default function EventosPage() {
       categoria === "Todas" || evento.tipo === categoria;
     return buscaMatch && categoriaMatch;
   });
+
+  function aoMudarBusca(valor: string) {
+    setBusca(valor);
+    setPaginaAtual(0);
+  }
+
+  function aoMudarCategoria(valor: string) {
+    setCategoria(valor);
+    setPaginaAtual(0);
+  }
 
   if (!admin) return null;
 
@@ -67,9 +84,9 @@ export default function EventosPage() {
 
         <FiltrosEventos
           busca={busca}
-          aoMudarBusca={setBusca}
+          aoMudarBusca={aoMudarBusca}
           categoria={categoria}
-          aoMudarCategoria={setCategoria}
+          aoMudarCategoria={aoMudarCategoria}
           categorias={categorias}
         />
 
@@ -78,13 +95,20 @@ export default function EventosPage() {
             <p>Carregando eventos...</p>
           </div>
         ) : eventosFiltrados.length > 0 ? (
-          <div className="grade-eventos">
-            {eventosFiltrados.map((evento) => (
-              <div key={evento.id} onClick={() => setEventoSelecionado(evento)} className="cursor-pointer">
-                <CartaoEvento evento={evento} />
-              </div>
-            ))}
-          </div>
+          <>
+            <div className="grade-eventos">
+              {eventosFiltrados.map((evento) => (
+                <div key={evento.id} onClick={() => setEventoSelecionado(evento)} className="cursor-pointer">
+                  <CartaoEvento evento={evento} />
+                </div>
+              ))}
+            </div>
+            <Paginacao
+              paginaAtual={paginaAtual}
+              totalPaginas={totalPaginas}
+              aoMudarPagina={setPaginaAtual}
+            />
+          </>
         ) : (
           <div className="eventos-vazio">
             <Calendar className="w-12 h-12 text-muted" />

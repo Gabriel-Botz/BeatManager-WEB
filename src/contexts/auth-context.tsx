@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { Administrador } from "@/lib/types";
 import * as api from "@/lib/api";
 
@@ -29,8 +30,19 @@ function loadInitialAdmin(): Administrador | null {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [admin, setAdmin] = useState<Administrador | null>(loadInitialAdmin);
   const [token, setToken] = useState<string | null>(loadInitialToken);
+
+  useEffect(() => {
+    api.setOnUnauthorized(() => {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(ADMIN_KEY);
+      setToken(null);
+      setAdmin(null);
+      router.push("/login");
+    });
+  }, [router]);
 
   useEffect(() => {
     if (token && admin) {

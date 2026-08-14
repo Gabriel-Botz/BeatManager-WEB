@@ -9,7 +9,13 @@ import {
   PageResponse,
 } from "./types";
 
-const BASE_URL = "http://localhost:8081";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8081";
+
+let onUnauthorized: (() => void) | null = null;
+
+export function setOnUnauthorized(callback: () => void) {
+  onUnauthorized = callback;
+}
 
 async function request<T>(
   path: string,
@@ -22,6 +28,11 @@ async function request<T>(
       ...options.headers,
     },
   });
+
+  if (res.status === 401) {
+    onUnauthorized?.();
+    throw new Error("Sessão expirada. Faça login novamente.");
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
@@ -126,6 +137,11 @@ export async function uploadImagem(
     headers: { Authorization: `Bearer ${token}` },
     body: formData,
   });
+
+  if (res.status === 401) {
+    onUnauthorized?.();
+    throw new Error("Sessão expirada. Faça login novamente.");
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => null);
