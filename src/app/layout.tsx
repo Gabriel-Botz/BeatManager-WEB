@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             src="/background-mb.png"
             alt=""
             className="w-full h-full object-cover"
-            style={{ opacity: 0.35, transform: "translateX(24px)" }}
+            style={{ opacity: 0.25, transform: "translateX(24px)" }}
           />
         </div>
         <AuthProvider>{children}</AuthProvider>
