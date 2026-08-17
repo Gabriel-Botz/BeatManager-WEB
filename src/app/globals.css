@@ -41,20 +41,6 @@ body {
   position: relative;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url('/background-mb.png');
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.15;
-  filter: blur(1px) brightness(0.6);
-  z-index: -1;
-  pointer-events: none;
-}
-
 /* =========================================
    PÁGINA
    ========================================= */
@@ -251,7 +237,7 @@ body::before {
 .botao-secundario-grande {
   padding: 0.875rem 2rem;
   border-radius: 0.75rem;
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--primary);
   color: rgba(226, 232, 240, 0.7);
   font-weight: 600;
   font-size: 1.125rem;
