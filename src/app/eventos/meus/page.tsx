@@ -37,14 +37,15 @@ export default function MeusEventosPage() {
       return;
     }
 
-    api.listarMeusEventos(token, admin.id, paginaAtual, ITENS_POR_PAGINA)
+    setLoading(true);
+    api.listarMeusEventos(token, admin.id, paginaAtual, ITENS_POR_PAGINA, categoria)
       .then((res) => {
         setListaEventos(res.content);
         setTotalPaginas(res.totalPages);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [admin, token, router, paginaAtual]);
+  }, [admin, token, router, paginaAtual, categoria]);
 
   const eventosFiltrados = listaEventos.filter((evento) => {
     const buscaMatch =
