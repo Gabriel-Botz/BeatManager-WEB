@@ -71,10 +71,13 @@ export function buscarPerfil(token: string): Promise<Administrador> {
 export function listarEventos(
   token: string,
   page: number = 0,
-  size: number = 10
+  size: number = 10,
+  tipo?: string
 ): Promise<PageResponse<Evento>> {
+  const params = new URLSearchParams({ page: String(page), size: String(size) });
+  if (tipo && tipo !== "Todas") params.append("tipo", tipo);
   return request<PageResponse<Evento>>(
-    `/eventos?page=${page}&size=${size}`,
+    `/eventos?${params.toString()}`,
     { headers: authHeaders(token) }
   );
 }
@@ -83,10 +86,13 @@ export function listarMeusEventos(
   token: string,
   administradorId: number,
   page: number = 0,
-  size: number = 10
+  size: number = 10,
+  tipo?: string
 ): Promise<PageResponse<Evento>> {
+  const params = new URLSearchParams({ page: String(page), size: String(size) });
+  if (tipo && tipo !== "Todas") params.append("tipo", tipo);
   return request<PageResponse<Evento>>(
-    `/eventos/administrador/${administradorId}?page=${page}&size=${size}`,
+    `/eventos/administrador/${administradorId}?${params.toString()}`,
     { headers: authHeaders(token) }
   );
 }

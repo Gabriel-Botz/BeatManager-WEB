@@ -34,14 +34,15 @@ export default function EventosPage() {
       return;
     }
 
-    api.listarEventos(token, paginaAtual, ITENS_POR_PAGINA)
+    setLoading(true);
+    api.listarEventos(token, paginaAtual, ITENS_POR_PAGINA, categoria)
       .then((res) => {
         setEventos(res.content);
         setTotalPaginas(res.totalPages);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [admin, token, router, paginaAtual]);
+  }, [admin, token, router, paginaAtual, categoria]);
 
   const eventosFiltrados = eventos.filter((evento) => {
     const buscaMatch =
